@@ -1,4 +1,13 @@
 # Changelog
+### [2.1.1](https://github.com/Azurewren/snippet-downloader/compare/2.1.0...2.1.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* correct versions.json for 2.0.1 and 2.1.0 ([369554f](https://github.com/Azurewren/snippet-downloader/commit/369554f2a539e20116056cf8f51af251dd775b5a))
+* enable strict TypeScript and resolve strict-mode errors ([6606ec2](https://github.com/Azurewren/snippet-downloader/commit/6606ec2b1b126ccf6c99d258f9b3a889c3a4fe6b))
+* remove debug logging and guard missing repo when excluding snippets ([dc9d842](https://github.com/Azurewren/snippet-downloader/commit/dc9d842aa245bafcac881eaf9548a126519a1c34))
+
 ## [2.1.0](https://github.com/Mara-Li/obsidian-snippet-downloader/compare/2.0.1...2.1.0)
 
 ### ⚠ BREAKING CHANGES

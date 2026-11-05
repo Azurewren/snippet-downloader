@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-snippet-downloader",
 	"name": "Snippet Downloader",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"minAppVersion": "1.11.4",
 	"description": "A obsidian's plugin to help to manage css snippets (download / update) from repository ",
 	"author": "Original author: Mara-Li. Maintainer: Azurewren",
