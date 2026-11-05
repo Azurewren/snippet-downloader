@@ -1,6 +1,6 @@
 import esbuild from "esbuild";
 import process from "process";
-import builtins from 'builtin-modules'
+import { builtinModules } from "node:module";
 
 const banner =
 `/*
@@ -11,7 +11,7 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === 'production');
 
-esbuild.build({
+const context = await esbuild.context({
 	banner: {
 		js: banner,
 	},
@@ -21,32 +21,30 @@ esbuild.build({
 		'obsidian',
 		'electron',
 		'@codemirror/autocomplete',
-		'@codemirror/closebrackets',
 		'@codemirror/collab',
 		'@codemirror/commands',
-		'@codemirror/comment',
-		'@codemirror/fold',
-		'@codemirror/gutter',
-		'@codemirror/highlight',
-		'@codemirror/history',
 		'@codemirror/language',
 		'@codemirror/lint',
-		'@codemirror/matchbrackets',
-		'@codemirror/panel',
-		'@codemirror/rangeset',
-		'@codemirror/rectangular-selection',
 		'@codemirror/search',
 		'@codemirror/state',
-		'@codemirror/stream-parser',
-		'@codemirror/text',
-		'@codemirror/tooltip',
 		'@codemirror/view',
-		...builtins],
+		'@lezer/common',
+		'@lezer/highlight',
+		'@lezer/lr',
+		...builtinModules,
+		...builtinModules.map(name => `node:${name}`),
+	],
 	format: 'cjs',
-	watch: !prod,
-	target: 'es2016',
+	target: 'es2018',
 	logLevel: "info",
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
 	outfile: 'main.js',
-}).catch(() => process.exit(1));
+});
+
+if (prod) {
+	await context.rebuild();
+	await context.dispose();
+} else {
+	await context.watch();
+}
