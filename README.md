@@ -8,8 +8,10 @@ The plugin will download all css snippet on a repository, unless :
 - There are excluded (see settings & excluded)
 
 In setting, you can :
-- Delete a repository. Warning ! It will not delete the snippet from your `.obsidian/snippet` folder.
-- Exclude file from the download / update. You can use the name, or a wildcard. 
+- Delete a repository. Warning! It will not delete the snippet file from your `.obsidian/snippets` folder.
+- Exclude a snippet from downloads and updates by name or regular expression (use the **Save exclusions** button after editing). Separate multiple patterns with commas.
+- Rename a downloaded snippet's local CSS filename. The GitHub source path remains unchanged, so update and exclude commands continue to reference the original file.
+- Optionally select a GitHub token from Obsidian SecretStorage to access private repositories and increase API rate limits. The plugin stores the secret reference, not the token value in its settings.
 
 
 So, the commands added by the plugins are :
@@ -19,6 +21,7 @@ So, the commands added by the plugins are :
 - **Update Specific Repository** : You can just update one repository using its name.
 
 💡Note : The file will be updated only if there is a new commit ! It's not based on the file contents.
+The plugin detects each repository's default branch automatically.
 
 Also, alternatively, you can use the settings tab to add a repository, delete a repository, exclude a snippets, etc.
 
@@ -26,7 +29,7 @@ Also, alternatively, you can use the settings tab to add a repository, delete a 
 <tbody>
 	<tr>
 		<td>⚠️</td>
-		<td><ul><li>The plugin can't work without the <code>snippets</code> folder in your <code>obsidian</code> : you need to create it before use the plugin for the first time.</li><li> Each update will erase any edit you made on the snippet !</li></ul></td>
+		<td><ul><li>The plugin creates the <code>snippets</code> folder in your Obsidian configuration folder if it does not exist.</li><li>Each update replaces the downloaded file and overwrites local edits.</li><li>When adding a repository, existing files and snippets with conflicting local filenames are not overwritten; rename one of the snippets first.</li></ul></td>
 	</tr>
 </tbody>
 </table>
@@ -40,8 +43,11 @@ Also, alternatively, you can use the settings tab to add a repository, delete a 
 - `npm install`
 - `npm run dev`
 
+Before releasing, run `npm run typecheck`, `npm run lint`, `npm test` and `npm run build`.
 *Credit to BRAT-42, where I take some idea and code !*
 
 💡If one day BRAT-42 or Obsidian add a similary function, this plugin will be deleted !
 
-🗒️It exists a limit of 60 API call for non identified user... That's mean you can download more than 60 times in a row ! 
+🗒️Unauthenticated GitHub API requests are rate-limited. Using a token can increase the available API quota, but GitHub's rate limits still apply.
+
+The optional token setting uses Obsidian SecretStorage and requires Obsidian 1.11.4 or newer. For private repositories, use a token with read-only repository contents access.

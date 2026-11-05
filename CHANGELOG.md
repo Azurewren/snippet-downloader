@@ -1,4 +1,30 @@
 # Changelog
+## [2.1.0](https://github.com/Mara-Li/obsidian-snippet-downloader/compare/2.0.1...2.1.0)
+
+### ⚠ BREAKING CHANGES
+
+* Requires Obsidian 1.11.4 or newer (SecretStorage).
+
+### Features
+
+* optional GitHub token stored in Obsidian SecretStorage (private repositories, higher rate limits)
+* rename a snippet locally while keeping its original GitHub path for updates and exclusions
+* detect each repository's default branch instead of assuming `main`
+* validate exclusion regular expressions and detect filename collisions before downloading
+
+### Bug Fixes
+
+* "Update all snippets" and settings update flow returned values in the wrong order
+* snippets are written through the vault adapter so the hidden `.obsidian/snippets` folder works
+* GitHub, network and file-write errors are reported instead of failing silently
+* settings from older versions are migrated safely on load
+
+### Maintenance
+
+* replaced Octokit with Obsidian's `requestUrl`
+* upgraded TypeScript, esbuild, ESLint and the Obsidian API typings
+* added Vitest tests, lint and type-check scripts, and a single release workflow
+
 ### [2.0.1](https://github.com/Mara-Li/obsidian-snippet-downloader/compare/2.0.0...2.0.1) (2022-08-22)
 
 
