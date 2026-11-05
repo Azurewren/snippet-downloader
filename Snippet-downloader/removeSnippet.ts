@@ -1,4 +1,4 @@
-import {SnippetRepo} from "./settings";
+import {SnippetRepo, SnippetSettingsUpdate} from "./settings";
 import {Notice} from "obsidian";
 import {searchExcluded} from "./utils";
 
@@ -12,7 +12,7 @@ function removeErrorSnippet(repoPath: string, errorSnippet: string, snippetList:
 	return errorSnippetList.join(', ');
 }
 
-export function removeSnippet(repoPath: string, snippetList: SnippetRepo[], errorSnippet: string) {
+export function removeSnippet(repoPath: string, snippetList: SnippetRepo[], errorSnippet: string): SnippetSettingsUpdate {
 	if (snippetList.some(snippet => snippet.repo === repoPath)) {
 		errorSnippet = removeErrorSnippet(repoPath, errorSnippet, snippetList)
 		snippetList.splice(snippetList.findIndex(snippet => snippet.repo === repoPath), 1)

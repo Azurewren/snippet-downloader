@@ -1,7 +1,7 @@
 import {App, FuzzySuggestModal, Notice} from "obsidian";
-import {SnippetDownloaderSettings} from "../settings";
+import {SnippetDownloaderSettings, SnippetSettingsUpdate} from "../settings";
 import snippetDownloader from "../main";
-import {basename, searchExcluded} from "../utils";
+import {basename, getLocalSnippetName, searchExcluded} from "../utils";
 import {removeSnippetFromExcluded} from "../removeSnippet";
 
 export interface SnippetExclude {
@@ -24,11 +24,13 @@ export function getExcludedSnippets(settings: SnippetDownloaderSettings) {
 	return allSnippet
 }
 
-export async function addExcludedSnippet(item: SnippetExclude, settings: SnippetDownloaderSettings){
-	let excludedSnippet = settings.excludedSnippet;
-	excludedSnippet = excludedSnippet + ', ' + item.snippetPath;
-	const snippetList = removeSnippetFromExcluded(item.repo, settings.snippetList, settings.errorSnippet, excludedSnippet);
-	return [snippetList, excludedSnippet];
+export async function addExcludedSnippet(item: SnippetExclude, settings: SnippetDownloaderSettings): Promise<SnippetSettingsUpdate>{
+	const escapedPath = item.snippetPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	const pattern = `^${escapedPath}$`;
+	const existing = settings.excludedSnippet.trim();
+	settings.excludedSnippet = existing ? `${existing}, ${pattern}` : pattern;
+	const snippetList = removeSnippetFromExcluded(item.repo, settings.snippetList, settings.errorSnippet, settings.excludedSnippet);
+	return [snippetList, settings.errorSnippet];
 }
 
 export class ExcludeSnippet extends FuzzySuggestModal<SnippetExclude> {
@@ -43,7 +45,10 @@ export class ExcludeSnippet extends FuzzySuggestModal<SnippetExclude> {
 	}
 
 	getItemText(item: SnippetExclude): string {
-		return basename(item.snippetPath);
+		const snippet = this.settings.snippetList
+			.find(repo => repo.repo === item.repo)
+			?.snippetsContents.find(content => content.name === item.snippetPath);
+		return snippet ? getLocalSnippetName(snippet) : basename(item.snippetPath);
 	}
 
 	getItems(): SnippetExclude[] {

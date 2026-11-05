@@ -1,4 +1,4 @@
-import {Plugin} from 'obsidian';
+import {Notice, Plugin} from 'obsidian';
 import {
 	DEFAULT_SETTINGS,
 	SnippetDownloaderSettings,
@@ -8,29 +8,43 @@ import {SnippetDownloaderModals} from "./modals/simpleCommands";
 import {RepoDownloader, SpecificSnippetDownloader} from "./modals/updateSnippets";
 import {ExcludeSnippet} from "./modals/excludeSnippet";
 import {addSnippet, updateRepo} from "./addSnippets";
+import {normalizeSettings} from "./utils";
 
 export default class snippetDownloader extends Plugin {
 	settings: SnippetDownloaderSettings;
 
+	getGitHubToken(): string | undefined {
+		const secretId = this.settings.githubTokenSecretId;
+		if (!secretId) {
+			return undefined;
+		}
+		const token = this.app.secretStorage.getSecret(secretId);
+		if (!token) {
+			const message = 'The selected GitHub token is missing from Obsidian SecretStorage. Select it again in plugin settings.';
+			new Notice(message);
+			throw new Error(message);
+		}
+		return token;
+	}
+
 	async updateAllSnippets() {
 		if (this.settings.snippetList.length > 0) {
-			const snippetList = this.settings.snippetList;
-			const errorSnippet = this.settings.errorSnippet;
-			const excludedSnippet = this.settings.excludedSnippet;
-			let updatedSettings = [errorSnippet, snippetList];
-			for (const repoName of snippetList) {
-				//@ts-ignore
-				updatedSettings= await updateRepo(repoName.repo, snippetList, this.app.vault, excludedSnippet, errorSnippet);
-				this.settings.snippetList = <SnippetRepo[]>updatedSettings[1];
-				this.settings.errorSnippet = <string>updatedSettings[0];
+			for (const repoName of [...this.settings.snippetList]) {
+				const updatedSettings = await updateRepo(
+					repoName.repo,
+					this.settings.snippetList,
+					this.app.vault,
+					this.settings.excludedSnippet,
+					this.settings.errorSnippet,
+					this.getGitHubToken()
+				);
+				await this.updateList(updatedSettings);
 			}
-			await this.saveSettings();
 		}
 	}
 	
-	async updateList(newSettings: SnippetRepo[] | (string | SnippetRepo[])[]){
-		this.settings.snippetList = <SnippetRepo[]>newSettings[0];
-		this.settings.errorSnippet = <string>newSettings[1];
+	async updateList(newSettings: [snippetList: SnippetRepo[], errorSnippet: string]){
+		[this.settings.snippetList, this.settings.errorSnippet] = newSettings;
 		await this.saveSettings();
 	}
 
@@ -43,7 +57,7 @@ export default class snippetDownloader extends Plugin {
 			callback: ()=> {
 				new SnippetDownloaderModals(this.app, async (result) => {
 					if (result) {
-						const newSettings = await addSnippet(result.trim(), this.settings, this.app.vault);
+						const newSettings = await addSnippet(result.trim(), this.settings, this.app.vault, this.getGitHubToken());
 						await this.updateList(newSettings);
 					}
 				}).open();
@@ -53,24 +67,14 @@ export default class snippetDownloader extends Plugin {
 		this.addCommand({
 			id: 'update-all-snippets',
 			name: 'Update all snippets',
-			//@ts-ignore
-			checkCallback: async (checking: boolean) => {
+			checkCallback: (checking: boolean) => {
 				if (this.settings.snippetList.length > 0) {
 					if (!checking) {
-						const snippetList = this.settings.snippetList;
-						const errorSnippet = this.settings.errorSnippet;
-						const excludedSnippet = this.settings.excludedSnippet;
-						let updatedSettings = [errorSnippet, snippetList];
-						for (const repoName of snippetList) {
-							//@ts-ignore
-							updatedSettings= await updateRepo(repoName.repo, snippetList, this.app.vault, excludedSnippet, errorSnippet);
-							await this.updateList(updatedSettings);
-						}
-						await this.saveSettings();
+						this.updateAllSnippets().catch(console.error);
 					}
 					return true;
-
-				} return false;
+				}
+				return false;
 			}
 		});
 
@@ -129,7 +133,7 @@ export default class snippetDownloader extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = normalizeSettings(await this.loadData(), DEFAULT_SETTINGS);
 	}
 
 	async saveSettings() {

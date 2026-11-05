@@ -1,8 +1,8 @@
 import {App, FuzzySuggestModal} from "obsidian";
-import {SnippetDownloaderSettings, SnippetRepo} from "../settings";
+import {SnippetDownloaderSettings} from "../settings";
 import {updateRepo, updateSpecificSnippet} from "../addSnippets";
 import snippetDownloader from "../main";
-import {basename, searchExcluded} from "../utils";
+import {basename, getLocalSnippetName, searchExcluded} from "../utils";
 
 interface RepoUpdate {
 	repoName: string;
@@ -59,7 +59,7 @@ export class RepoDownloader extends FuzzySuggestModal<RepoUpdate> {
 	}
 
 	async onChooseItem(item: RepoUpdate, evt: MouseEvent | KeyboardEvent) {
-		const allSettings = await updateRepo(item.repoName, this.settings.snippetList, this.app.vault, this.settings.excludedSnippet, this.settings.errorSnippet);
+		const allSettings = await updateRepo(item.repoName, this.settings.snippetList, this.app.vault, this.settings.excludedSnippet, this.settings.errorSnippet, this.plugin.getGitHubToken());
 		await this.plugin.updateList(allSettings);
 	}
 
@@ -77,7 +77,10 @@ export class SpecificSnippetDownloader extends FuzzySuggestModal<SnippetUpdate> 
 	}
 
 	getItemText(item: SnippetUpdate): string {
-		return basename(item.snippetPath);
+		const snippet = this.settings.snippetList
+			.find(repo => repo.repo === item.repo)
+			?.snippetsContents.find(content => content.name === item.snippetPath);
+		return snippet ? getLocalSnippetName(snippet) : basename(item.snippetPath);
 	}
 
 	getItems(): SnippetUpdate[] {
@@ -85,7 +88,7 @@ export class SpecificSnippetDownloader extends FuzzySuggestModal<SnippetUpdate> 
 	}
 
 	async onChooseItem(item: SnippetUpdate, evt: MouseEvent | KeyboardEvent) {
-		const newList = await updateSpecificSnippet(item, this.settings);
+		const newList = await updateSpecificSnippet(item, this.settings, this.app.vault, this.plugin.getGitHubToken());
 		await this.plugin.updateList(newList);
 	}
 }
