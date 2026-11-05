@@ -10,9 +10,3 @@ summary.snippets-downloader-summary {
 	top:-2em;
 	position: relative;
 }
-
-button.snippets-downloader-button {
-	background: transparent !important;
-	border: none !important;
-	box-shadow: none !important;
-}

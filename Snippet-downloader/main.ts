@@ -81,7 +81,6 @@ export default class snippetDownloader extends Plugin {
 		this.addCommand({
 			id: 'update-specific-repo',
 			name: 'Update specific repository',
-			hotkeys:[],
 			checkCallback: (checking:boolean) => {
 				if (this.settings.snippetList.length > 0){
 					if (!checking) {
@@ -96,7 +95,6 @@ export default class snippetDownloader extends Plugin {
 		this.addCommand({
 			id: 'update-specific-snippet',
 			name: 'Update specific snippet',
-			hotkeys:[],
 			checkCallback: (checking:boolean) => {
 				if (this.settings.snippetList.length > 0) {
 					if (!checking) {
@@ -111,7 +109,6 @@ export default class snippetDownloader extends Plugin {
 		this.addCommand({
 			id: 'remove-specific-snippet',
 			name: 'Exclude specific snippet',
-			hotkeys:[],
 			checkCallback: (checking:boolean) => {
 				if (this.settings.snippetList.length > 0) {
 					if (!checking) {
@@ -124,12 +121,6 @@ export default class snippetDownloader extends Plugin {
 		})
 
 		this.addSettingTab(new SnippetDownloaderTabs(this.app, this));
-
-
-	}
-
-	onunload() {
-
 	}
 
 	async loadSettings() {
