@@ -39,7 +39,7 @@ Also, alternatively, you can use the settings tab to add a repository, delete a 
 - Use the community plugin market.
 
 ## Developpements
-- `git clone git@github.com:Mara-Li/obsidian-snippet-downloader.git`
+- `git clone git@github.com:Azurewren/snippet-downloader.git`
 - `npm install`
 - `npm run dev`
 
@@ -50,4 +50,4 @@ Before releasing, run `npm run typecheck`, `npm run lint`, `npm test` and `npm r
 
 🗒️Unauthenticated GitHub API requests are rate-limited. Using a token can increase the available API quota, but GitHub's rate limits still apply.
 
-The optional token setting uses Obsidian SecretStorage and requires Obsidian 1.11.4 or newer. For private repositories, use a token with read-only repository contents access.
+The optional token setting uses Obsidian Keychain secrets and requires Obsidian 1.11.4 or newer. For private repositories, use a token with read-only repository contents access.
