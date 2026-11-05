@@ -8,7 +8,6 @@ function removeErrorSnippet(repoPath: string, errorSnippet: string, snippetList:
 	for (const snippetContents of snippet.snippetsContents) {
 		errorSnippetList=errorSnippetList.filter(v=>v!=snippetContents.name.replace('.css', '').trim());
 	}
-	console.log(errorSnippetList)
 	return errorSnippetList.join(', ');
 }
 
@@ -25,6 +24,9 @@ export function removeSnippet(repoPath: string, snippetList: SnippetRepo[], erro
 
 export function removeSnippetFromExcluded(repoPath: string, snippetList: SnippetRepo[], errorSnippet: string, excludedSnippet: string) {
 	const repo = snippetList.find(snippet => snippet.repo === repoPath)
-	repo.snippetsContents=repo.snippetsContents.filter(snippet=>!searchExcluded(excludedSnippet, snippet.name) && !(searchExcluded(errorSnippet, snippet.name)))
+	if (!repo) {
+		return snippetList
+	}
+	repo.snippetsContents = repo.snippetsContents.filter(snippet=>!searchExcluded(excludedSnippet, snippet.name) && !(searchExcluded(errorSnippet, snippet.name)))
 	return snippetList
 }
