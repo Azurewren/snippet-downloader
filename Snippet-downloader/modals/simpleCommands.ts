@@ -1,6 +1,6 @@
 import { App, Modal, Setting } from "obsidian";
 export class SnippetDownloaderModals extends Modal {
-	result: string;
+	result = "";
 	onSubmit: (result: string) => void;
 
 	constructor(app: App, onSubmit: (result: string) => void) {
@@ -10,9 +10,9 @@ export class SnippetDownloaderModals extends Modal {
 
 	onOpen() {
 		const {contentEl} = this;
-		contentEl.createEl("h1", { text: "Repo Links" });
+		new Setting(contentEl).setName("Repository links").setHeading();
 		new Setting(contentEl)
-			.setName("Repo Link")
+			.setName("Repository link")
 			.addText((text) => {
 				text.onChange((value) => {
 					this.result = value;

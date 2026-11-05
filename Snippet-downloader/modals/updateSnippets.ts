@@ -41,7 +41,6 @@ export function getAllSnippet(settings: SnippetDownloaderSettings) {
 }
 
 export class RepoDownloader extends FuzzySuggestModal<RepoUpdate> {
-	app: App;
 	settings: SnippetDownloaderSettings;
 	plugin: snippetDownloader;
 
@@ -66,7 +65,6 @@ export class RepoDownloader extends FuzzySuggestModal<RepoUpdate> {
 }
 
 export class SpecificSnippetDownloader extends FuzzySuggestModal<SnippetUpdate> {
-	app: App;
 	settings: SnippetDownloaderSettings;
 	plugin: snippetDownloader;
 

@@ -77,11 +77,11 @@ export class SnippetDownloaderTabs extends PluginSettingTab {
 
 		new Setting(containerEl).setName('Snippet manager').setHeading();
 		const desc_excluder = document.createDocumentFragment();
-		desc_excluder.createEl('span', null, (span)=>{
+		desc_excluder.createEl('span', {}, (span)=>{
 			span.innerText='Type the snippet name you want to exclude from the list, without the extension.\nYou can also use regex, for example: ';
 			span.createEl('code', {text: '^(.*)$'});
 			span.createEl('span', {text:' will match all snippets.\n\n'});
-			span.createEl('a', null, (link)=>{
+			span.createEl('a', {}, (link)=>{
 				link.innerText='You can check your regex here.';
 				link.href='https://regex101.com/';
 			})

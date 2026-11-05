@@ -4,6 +4,9 @@ import {searchExcluded} from "./utils";
 
 function removeErrorSnippet(repoPath: string, errorSnippet: string, snippetList: SnippetRepo[]){
 	const snippet = snippetList.find(snippet => snippet.repo === repoPath)
+	if (!snippet) {
+		return errorSnippet;
+	}
 	let errorSnippetList = errorSnippet.split(', ');
 	for (const snippetContents of snippet.snippetsContents) {
 		errorSnippetList=errorSnippetList.filter(v=>v!=snippetContents.name.replace('.css', '').trim());

@@ -11,7 +11,7 @@ import {addSnippet, updateRepo} from "./addSnippets";
 import {normalizeSettings} from "./utils";
 
 export default class snippetDownloader extends Plugin {
-	settings: SnippetDownloaderSettings;
+	settings!: SnippetDownloaderSettings;
 
 	getGitHubToken(): string | undefined {
 		const secretId = this.settings.githubTokenSecretId;

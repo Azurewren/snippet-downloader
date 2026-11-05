@@ -34,7 +34,6 @@ export async function addExcludedSnippet(item: SnippetExclude, settings: Snippet
 }
 
 export class ExcludeSnippet extends FuzzySuggestModal<SnippetExclude> {
-	app: App;
 	settings: SnippetDownloaderSettings;
 	plugin: snippetDownloader;
 
