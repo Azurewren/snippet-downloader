@@ -4,7 +4,7 @@
 	"version": "2.1.0",
 	"minAppVersion": "1.11.4",
 	"description": "A obsidian's plugin to help to manage css snippets (download / update) from repository ",
-	"author": "Mara-Li",
+	"author": "Original author: Mara-Li. Maintainer: Azurewren",
 	"authorUrl": "www.mara-li.fr",
 	"isDesktopOnly": false
 }
